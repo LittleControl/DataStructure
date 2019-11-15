@@ -45,21 +45,34 @@ class DoubleLinkedList {
     insert(value, position) {
         let node = new Node(value)
         if (this.length >= position) {
-            let count = 1
-            let pointer = this.head
-            while (count !== position) {
-                pointer = pointer.next
-                count++
+            if (this.length === position) {
+                if (this.length === 1) {
+                    this.head = node
+                    node.next = this.tail
+                    this.tail.front = node
+                } else {
+                    node.next = this.tail
+                    node.front = this.tail.front
+                    this.tail.front.next = node
+                    this.tail.front = node
+                }
+            } else {
+                let count = 1
+                let pointer = this.head
+                while (count !== position) {
+                    pointer = pointer.next
+                    count++
+                }
+                node.front = pointer.front
+                node.next = pointer
+                node.front.next = node
+                node.next.front = node
+                pointer = null
             }
-            node.front = pointer.front
-            node.next = pointer
-            node.front.next = node
-            node.next.front = node
-            pointer = null
+            this.length++
         } else {
             this.append(value)
         }
-        this.length++
     }
     remove(value) {
         let pointer = this.head
@@ -158,20 +171,9 @@ let t0 = new DoubleLinkedList()
 t0.append('Nothing')
 t0.append('Control')
 t0.append('Little')
-t0.insert('Rain', 2)
-t0.insert('Sorrow', 3)
 console.log(t0.value)
-t0.remove('Nothing')
-t0.removeAt(4)
+t0.insert('Rain', 1)
 console.log(t0.value)
-//Rain->Sorrow->Control
-t0.update('Control', 'Sky')
-t0.update('Sky', 'Spirit')
-console.log(t0.value)
-//Rain->Sorrow->Spirit
-t0.updateAt(6, 'Cool')
-//Rain->Sorrow->Spirit->Cool
-console.log(t0.value)
-console.log(t0.index(3))
-console.log(t0.indexOf('Cool'))
+t0.insert('Sorrow', 4)
+console.log(t0)
 
