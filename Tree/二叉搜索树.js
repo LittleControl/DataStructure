@@ -70,7 +70,7 @@ class BinaryTree {
     }
     search(value, root = this.root) {
         let pointer = root
-        while (pointer) {
+        if (pointer) {
             if (pointer.value === value) {
                 return true
             }
@@ -136,8 +136,45 @@ class BinaryTree {
         }
 
     }
-    remove(key) {
+    remove(value) {
+        let pointer = this.root
+        let front = pointer
+        while (pointer) {
+            if (pointer.value == value) {
+                let isLeft
+                front.left == pointer ? isLeft = true : isLeft = false
+                if (pointer.left == null && pointer.right == null) {
+                    //要删除的节点没有孩子
+                    if (pointer == this.root) {
+                        this.root.value == null
+                    } else {
+                        if (isLeft) {
+                            front.left = null
+                        } else {
+                            front.right = null
+                        }
+                        return
+                    }
+                } else if ((pointer.left == null && pointer.right != null) || (pointer.right == null && pointer.left != null)) {
+                    // 要删除的节点只有一个孩子
+                    if (isLeft) {
+                        pointer.left == null ? front.left = pointer.right : front.left = pointer.left
+                    } else {
+                        pointer.left == null ? front.right = pointer.right : front.right = pointer.left
+                    }
+                    return
+                } else {
 
+                }
+            }
+            front = pointer
+            if (value < pointer.value) {
+                pointer = pointer.left
+            }
+            if (value > front.value) {
+                pointer = front.right
+            }
+        }
     }
 }
 
@@ -150,9 +187,10 @@ bt.insert(35)
 bt.insert(3)
 bt.insert(11)
 bt.insert(27)
+bt.remove(3)
+bt.remove(11)
+bt.remove(35)
 // bt.preOrderTraverse()
-// bt.inOrderTraverse()
-// bt.postOrderTraverse()
-console.log(bt.min)
-console.log(bt.max)
-// console.log(bt)
+// console.log('==========================')
+bt.insert(37)
+bt.postOrderTraverse()
