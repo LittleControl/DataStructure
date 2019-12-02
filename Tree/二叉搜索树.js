@@ -155,16 +155,36 @@ class BinaryTree {
                         }
                         return
                     }
-                } else if ((pointer.left == null && pointer.right != null) || (pointer.right == null && pointer.left != null)) {
+                }
+                if ((pointer.left == null && pointer.right != null) || (pointer.right == null && pointer.left != null)) {
                     // 要删除的节点只有一个孩子
+                    if (pointer = this.root) {
+                        this.root.left = null
+                        this.root.right = null
+                        return
+                    }
                     if (isLeft) {
                         pointer.left == null ? front.left = pointer.right : front.left = pointer.left
                     } else {
                         pointer.left == null ? front.right = pointer.right : front.right = pointer.left
                     }
                     return
-                } else {
-
+                }
+                if (pointer.left != null && pointer.right != null) {
+                    //这里使用要删除的结点的前继节点来代替位置
+                    let min = pointer.left
+                    let fmin = min
+                    while (min.right) {
+                        fmin = min
+                        min = min.right
+                    }
+                    fmin.right = null
+                    min.left = pointer.left
+                    min.right = pointer.right
+                    if (pointer == this.root) {
+                        this.root = min
+                    }
+                    return
                 }
             }
             front = pointer
@@ -179,18 +199,13 @@ class BinaryTree {
 }
 
 let bt = new BinaryTree()
-bt.insert(18)
+bt.insert(44)
+bt.insert(21)
+bt.insert(65)
 bt.insert(14)
-bt.insert(22)
-bt.insert(7)
-bt.insert(35)
-bt.insert(3)
-bt.insert(11)
-bt.insert(27)
-bt.remove(3)
-bt.remove(11)
-bt.remove(35)
-// bt.preOrderTraverse()
-// console.log('==========================')
-bt.insert(37)
-bt.postOrderTraverse()
+bt.insert(32)
+bt.insert(58)
+bt.insert(72)
+bt.insert(80)
+bt.remove(44)
+bt.inOrderTraverse()
