@@ -35,3 +35,19 @@ FROM
 WHERE
   t1.rank = '2'
 ;
+
+-- offical resolution
+SELECT
+  (
+    SELECT
+      salary
+    FROM
+      Employee
+    ORDER BY
+      salary
+    LIMIT
+      1
+    OFFSET
+      1
+  )
+;
