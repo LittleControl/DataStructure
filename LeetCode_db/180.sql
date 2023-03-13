@@ -1,51 +1,23 @@
--- id连续
-SELECT    t1.num AS 'ConsecutiveNums'
+-- 兼容id连续和不连续情况
+SELECT    DISTINCT t2.num AS 'ConsecutiveNums'
 FROM      (
-          SELECT    id,
-                    num,
-                    id - (
-                    ROW_NUMBER() OVER (
-                    PARTITION BY num
-                    ORDER BY  num
-                    )
-                    ) AS 'flag'
-          FROM      LOGS
-          ) t1
-GROUP BY  t1.num,
-          t1.flag
+          SELECT    t1.num,
+                    --     防止rn2为负数, leetcode提示 bigint unsigned 数值类型问题
+                    id2 + 1 - ROW_NUMBER() OVER (
+                    PARTITION BY t1.num
+                    ORDER BY  t1.id2
+                    ) AS 'rn2'
+          FROM      (
+                    SELECT    num,
+                              ROW_NUMBER() OVER (
+                              ORDER BY  id
+                              ) AS 'id2'
+                    FROM      LOGS
+                    ORDER BY  id
+                    ) t1
+          ORDER BY  t1.id2
+          ) t2
+GROUP BY  t2.num,
+          t2.rn2
 HAVING    (COUNT(1) > 2)
-;
-
-CREATE    TABLE IF NOT EXISTS LOGS (id INT, num INT)
-;
-
-TRUNCATE  TABLE LOGS
-;
-
-INSERT    INTO LOGS (id, num)
-VALUES    ('1', '1')
-;
-
-INSERT    INTO LOGS (id, num)
-VALUES    ('2', '1')
-;
-
-INSERT    INTO LOGS (id, num)
-VALUES    ('3', '1')
-;
-
-INSERT    INTO LOGS (id, num)
-VALUES    ('4', '2')
-;
-
-INSERT    INTO LOGS (id, num)
-VALUES    ('5', '1')
-;
-
-INSERT    INTO LOGS (id, num)
-VALUES    ('6', '2')
-;
-
-INSERT    INTO LOGS (id, num)
-VALUES    ('7', '2')
 ;
