@@ -1,23 +1,18 @@
 -- 兼容id连续和不连续情况
-SELECT    DISTINCT t2.num AS 'ConsecutiveNums'
+SELECT    DISTINCT t.num AS 'ConsecutiveNums'
 FROM      (
-          SELECT    t1.num,
-                    --     防止rn2为负数, leetcode提示 bigint unsigned 数值类型问题
-                    id2 + 1 - ROW_NUMBER() OVER (
-                    PARTITION BY t1.num
-                    ORDER BY  t1.id2
-                    ) AS 'rn2'
-          FROM      (
-                    SELECT    num,
-                              ROW_NUMBER() OVER (
-                              ORDER BY  id
-                              ) AS 'id2'
-                    FROM      LOGS
+          SELECT    *,
+                    ROW_NUMBER() OVER (
+                    PARTITION BY num
                     ORDER BY  id
-                    ) t1
-          ORDER BY  t1.id2
-          ) t2
-GROUP BY  t2.num,
-          t2.rn2
+                    ) AS 'rn',
+                    ROW_NUMBER() OVER (
+                    ORDER BY  id
+                    ) AS 'id2'
+          FROM      LOGS
+          ) t
+GROUP BY  t.num,
+          --     +1是为了防止表达式为负数, leetcode提示 bigint unsigned 数值类型问题
+          (t.id2 - t.rn + 1)
 HAVING    (COUNT(1) > 2)
 ;
