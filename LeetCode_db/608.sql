@@ -10,3 +10,18 @@ GROUP BY  t1.id,
           t1.p_id
 ORDER BY  t1.id
 ;
+
+-- case优化
+SELECT    id,
+          (
+          CASE
+                    WHEN p_id IS NULL THEN 'Root'
+                    WHEN id IN (
+                    SELECT    p_id
+                    FROM      tree
+                    ) THEN 'Inner'
+                    ELSE 'Leaf'
+          END
+          ) AS TYPE
+FROM      tree
+ORDER BY  id
