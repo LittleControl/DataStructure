@@ -55,6 +55,18 @@ FROM      (
           ) t2
 ;
 
+--
+SELECT    ROUND(AVG (a.event_date IS NOT NULL), 2) fraction
+FROM      (
+          SELECT    player_id,
+                    MIN(event_date) AS login
+          FROM      activity
+          GROUP BY  player_id
+          ) p
+LEFT JOIN activity a ON p.player_id = a.player_id
+AND       DATEDIFF(a.event_date, p.login) = 1
+;
+
 -- SQL Schema
 CREATE    TABLE IF NOT EXISTS Activity (player_id INT, device_id INT, event_date DATE, games_played INT)
 ;
