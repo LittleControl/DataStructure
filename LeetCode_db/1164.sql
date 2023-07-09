@@ -8,11 +8,12 @@
 -- | change_date   | date    |
 -- +---------------+---------+
 -- res: product_id price
-SELECT    p.product_id AS product_id,
-          CASE
-                    WHEN t.new_price IS NULL THEN 10
-                    ELSE t.new_price
-          END AS price
+SELECT    p.product_id            AS product_id,
+          IFNULL(t.new_price, 10) AS price
+          -- CASE
+          --           WHEN t.new_price IS NULL THEN 10
+          --           ELSE t.new_price
+          -- END AS price
 FROM      (
           SELECT    DISTINCT product_id
           FROM      Products
