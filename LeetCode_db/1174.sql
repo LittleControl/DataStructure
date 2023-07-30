@@ -11,25 +11,21 @@
 SELECT    ROUND(
           AVG (
           CASE
-                    WHEN d1.order_date = d1.customer_pref_delivery_date THEN 1
+                    WHEN order_date = customer_pref_delivery_date THEN 1
                     ELSE 0
           END
           ) * 100,
           2
           ) AS immediate_percentage
-FROM      Delivery d1
-RIGHT     JOIN (
-          SELECT    delivery_id
-          FROM      (
-                    SELECT    delivery_id,
-                              ROW_NUMBER() OVER (
-                              PARTITION BY customer_id
-                              ORDER BY  order_date
-                              ) AS rn
-                    FROM      Delivery
-                    ) AS t
-          WHERE     rn = 1
-          ) d2 ON d1.delivery_id = d2.delivery_id
+FROM      (
+          SELECT    *,
+                    ROW_NUMBER() OVER (
+                    PARTITION BY customer_id
+                    ORDER BY  order_date
+                    ) AS rn
+          FROM      Delivery
+          ) AS t
+WHERE     rn = 1
 ;
 
 -- 及时订单
